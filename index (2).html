@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Data Analysis & Virtualization</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: #1e293b;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #64748b;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .projects-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .projects-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .segment {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .segment:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .data-analysis {
+            border-top-color: #3b82f6;
+        }
+        
+        .virtualization {
+            border-top-color: #8b5cf6;
+        }
+        
+        .segment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .segment-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .data-analysis .segment-icon {
+            background-color: #3b82f6;
+        }
+        
+        .virtualization .segment-icon {
+            background-color: #8b5cf6;
+        }
+        
+        .segment-title {
+            font-size: 1.8rem;
+            color: #1e293b;
+        }
+        
+        .segment-description {
+            color: #64748b;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+        }
+        
+        .dropdown-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .dropdown-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #475569;
+        }
+        
+        .dropdown {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background-color: white;
+            font-size: 1rem;
+            color: #334155;
+            appearance: none;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            background-size: 16px;
+        }
+        
+        .dropdown:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        
+        .placeholder-option {
+            color: #94a3b8;
+        }
+        
+        .project-details {
+            background-color: white;
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .project-details.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .project-header {
+            padding: 25px 30px;
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .project-title {
+            font-size: 1.6rem;
+            color: #1e293b;
+        }
+        
+        .project-type {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .type-data {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+        
+        .type-virtual {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+        }
+        
+        .project-content {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .project-description {
+            font-size: 1.1rem;
+            color: #475569;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+        
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            background-color: #8b5cf6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: background-color 0.3s, transform 0.2s;
+            align-self: flex-start;
+            margin-top: 10px;
+        }
+        
+        .project-link:hover {
+            background-color: #7c3aed;
+            transform: translateY(-2px);
+        }
+        
+        .project-link i {
+            margin-right: 10px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+        
+        .status-ready {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-upcoming {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .coming-soon {
+            text-align: center;
+            padding: 60px 30px;
+            color: #64748b;
+        }
+        
+        .coming-soon i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #cbd5e1;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            color: #94a3b8;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .tech-tag {
+            padding: 6px 12px;
+            background-color: #f1f5f9;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Data Analysis & Virtualization Portfolio</h1>
+            <p class="subtitle">Explore my projects in data analysis and interactive data visualization. Select a project from either category to view detailed information and access the live application.</p>
+        </header>
+        
+        <main class="main-content">
+            <div class="projects-section">
+                <!-- Data Analysis Segment -->
+                <section class="segment data-analysis">
+                    <div class="segment-header">
+                        <div class="segment-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h2 class="segment-title">Data Analysis</h2>
+                    </div>
+                    
+                    <p class="segment-description">In-depth analysis projects focusing on data exploration, statistical modeling, and business intelligence insights.</p>
+                    
+                    <div class="dropdown-container">
+                        <label for="dataAnalysisDropdown" class="dropdown-label">Select a Data Analysis Project</label>
+                        <select id="dataAnalysisDropdown" class="dropdown">
+                            <option value="" class="placeholder-option">Choose a project...</option>
+                            <option value="sales-trends">Sales Performance & Trend Analysis</option>
+                            <option value="customer-segmentation">Customer Segmentation Analysis</option>
+                            <option value="market-basket">Market Basket Analysis</option>
+                        </select>
+                    </div>
+                    
+                    <div class="status-info">
+                        <p><strong>Status:</strong> <span class="status-badge status-upcoming">Projects in Development</span></p>
+                        <p style="margin-top: 10px; font-size: 0.95rem; color: #64748b;">Data analysis projects are currently being developed and will be available soon.</p>
+                    </div>
+                </section>
+                
+                <!-- Virtualization Segment -->
+                <section class="segment virtualization">
+                    <div class="segment-header">
+                        <div class="segment-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h2 class="segment-title">Virtualization</h2>
+                    </div>
+                    
+                    <p class="segment-description">Interactive data visualization projects that transform complex datasets into engaging, intuitive visual experiences.</p>
+                    
+                    <div class="dropdown-container">
+                        <label for="virtualizationDropdown" class="dropdown-label">Select a Virtualization Project</label>
+                        <select id="virtualizationDropdown" class="dropdown">
+                            <option value="" class="placeholder-option">Choose a project...</option>
+                            <option value="tb-haningtone">TB Haningtone Virtualization</option>
+                            <option value="ibm-attrition">IBM HR Employee Attrition Dashboard</option>
+                        </select>
+                    </div>
+                    
+                    <div class="status-info">
+                        <p><strong>Status:</strong> <span class="status-badge status-ready">Projects Ready</span></p>
+                        <p style="margin-top: 10px; font-size: 0.95rem; color: #64748b;">Virtualization projects are live and ready to explore. Select a project above to view details.</p>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Project Details Display Area -->
+            <div id="projectDetails" class="project-details">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+        </main>
+        
+        <footer>
+            <p>Portfolio of Data Analysis & Virtualization Projects &copy; <span id="currentYear"></span></p>
+            <p>Built with modern web technologies for optimal viewing experience</p>
+        </footer>
+    </div>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Project data
+        const projects = {
+            // Data Analysis Projects (upcoming)
+            "sales-trends": {
+                title: "Sales Performance & Trend Analysis",
+                type: "data",
+                description: "A comprehensive analysis of sales data across multiple regions and product categories, identifying key trends, seasonal patterns, and opportunities for growth. This project utilizes time series analysis and predictive modeling to forecast future performance.",
+                status: "upcoming",
+                techStack: ["Python", "Pandas", "Tableau", "SQL", "Statistical Modeling"]
+            },
+            "customer-segmentation": {
+                title: "Customer Segmentation Analysis",
+                type: "data",
+                description: "Using clustering algorithms to segment customers based on purchasing behavior, demographics, and engagement patterns. This analysis helps in targeted marketing strategies and personalized customer experiences.",
+                status: "upcoming",
+                techStack: ["R", "K-means Clustering", "PCA", "Customer Analytics"]
+            },
+            "market-basket": {
+                title: "Market Basket Analysis",
+                type: "data",
+                description: "Association rule mining to uncover product affinities and purchasing patterns. This analysis helps retailers optimize product placement, cross-selling strategies, and promotional bundling.",
+                status: "upcoming",
+                techStack: ["Apriori Algorithm", "Python", "Data Mining", "Retail Analytics"]
+            },
+            
+            // Virtualization Projects (ready)
+            "tb-haningtone": {
+                title: "TB Haningtone Virtualization",
+                type: "virtual",
+                description: "An interactive visualization of tuberculosis data across different demographics and regions. This tool allows users to explore infection rates, treatment outcomes, and demographic correlations through intuitive charts and maps.",
+                status: "ready",
+                link: "https://hansec-technology-dot.github.io/Virtualization.TB-Haningtone/",
+                techStack: ["D3.js", "JavaScript", "Data Visualization", "Public Health Data"]
+            },
+            "ibm-attrition": {
+                title: "IBM HR Employee Attrition Dashboard",
+                type: "virtual",
+                description: "An interactive dashboard visualizing employee attrition data from IBM. Explore factors influencing employee turnover, departmental trends, and demographic insights through filterable visualizations.",
+                status: "ready",
+                link: "https://hansec-technology-dot.github.io/IBM-HR-Employee-Attrition-Dataset-virtiual/",
+                techStack: ["Chart.js", "JavaScript", "HR Analytics", "Interactive Dashboard"]
+            }
+        };
+        
+        // Get dropdown elements
+        const dataAnalysisDropdown = document.getElementById('dataAnalysisDropdown');
+        const virtualizationDropdown = document.getElementById('virtualizationDropdown');
+        const projectDetailsContainer = document.getElementById('projectDetails');
+        
+        // Function to display project details
+        function displayProject(projectId) {
+            // Hide project details if no project selected
+            if (!projectId) {
+                projectDetailsContainer.classList.remove('active');
+                return;
+            }
+            
+            const project = projects[projectId];
+            
+            // Determine status text and class
+            let statusText = '';
+            let statusClass = '';
+            if (project.status === 'ready') {
+                statusText = 'Ready to View';
+                statusClass = 'status-ready';
+            } else {
+                statusText = 'Coming Soon';
+                statusClass = 'status-upcoming';
+            }
+            
+            // Create tech stack HTML
+            let techStackHTML = '';
+            if (project.techStack && project.techStack.length > 0) {
+                techStackHTML = `
+                    <div class="tech-stack">
+                        ${project.techStack.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                    </div>
+                `;
+            }
+            
+            // Create project details HTML
+            const projectHTML = `
+                <div class="project-header">
+                    <h3 class="project-title">${project.title}</h3>
+                    <div>
+                        <span class="project-type type-${project.type}">${project.type === 'data' ? 'Data Analysis' : 'Virtualization'}</span>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p class="project-description">${project.description}</p>
+                    
+                    ${techStackHTML}
+                    
+                    ${project.status === 'ready' && project.link ? 
+                        `<a href="${project.link}" target="_blank" class="project-link">
+                            <i class="fas fa-external-link-alt"></i> View Live Project
+                        </a>` 
+                        : 
+                        `<div class="coming-soon">
+                            <i class="fas fa-tools"></i>
+                            <h3>Project Under Development</h3>
+                            <p>This project is currently being developed and will be available soon. Check back later!</p>
+                        </div>`
+                    }
+                </div>
+            `;
+            
+            // Insert HTML into container
+            projectDetailsContainer.innerHTML = projectHTML;
+            projectDetailsContainer.classList.add('active');
+            
+            // Scroll to project details for better UX
+            projectDetailsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Event listeners for dropdowns
+        dataAnalysisDropdown.addEventListener('change', function() {
+            const selectedProjectId = this.value;
+            
+            // Reset virtualization dropdown
+            virtualizationDropdown.value = '';
+            
+            // Display selected project
+            displayProject(selectedProjectId);
+        });
+        
+        virtualizationDropdown.addEventListener('change', function() {
+            const selectedProjectId = this.value;
+            
+            // Reset data analysis dropdown
+            dataAnalysisDropdown.value = '';
+            
+            // Display selected project
+            displayProject(selectedProjectId);
+        });
+        
+        // Initialize with the first virtualization project as an example
+        window.addEventListener('DOMContentLoaded', () => {
+            // Uncomment the line below to auto-load the first virtualization project on page load
+            // virtualizationDropdown.value = 'tb-haningtone';
+            // displayProject('tb-haningtone');
+        });
+    </script>
+</body>
+</html>
