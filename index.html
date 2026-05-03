@@ -192,6 +192,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .project-title {
@@ -256,6 +258,15 @@
             margin-right: 10px;
         }
         
+        .code-link {
+            background-color: #3b82f6;
+            margin-left: 15px;
+        }
+        
+        .code-link:hover {
+            background-color: #2563eb;
+        }
+        
         .status-badge {
             display: inline-block;
             padding: 6px 12px;
@@ -299,7 +310,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 20px;
+            margin: 20px 0;
         }
         
         .tech-tag {
@@ -308,6 +319,39 @@
             border-radius: 6px;
             font-size: 0.9rem;
             color: #475569;
+        }
+        
+        .results-preview {
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .results-preview h4 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .results-preview pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
@@ -335,15 +379,9 @@
                         <label for="dataAnalysisDropdown" class="dropdown-label">Select a Data Analysis Project</label>
                         <select id="dataAnalysisDropdown" class="dropdown">
                             <option value="" class="placeholder-option">Choose a project...</option>
-                            <option value="sales-trends">Sales Performance & Trend Analysis</option>
-                            <option value="customer-segmentation">Customer Segmentation Analysis</option>
-                            <option value="market-basket">Market Basket Analysis</option>
+                            <option value="anova-microbial">ANOVA: Microbial Contamination Analysis</option>
+                            
                         </select>
-                    </div>
-                    
-                    <div class="status-info">
-                        <p><strong>Status:</strong> <span class="status-badge status-upcoming">Projects in Development</span></p>
-                        <p style="margin-top: 10px; font-size: 0.95rem; color: #64748b;">Data analysis projects are currently being developed and will be available soon.</p>
                     </div>
                 </section>
                 
@@ -366,11 +404,6 @@
                             <option value="ibm-attrition">IBM HR Employee Attrition Dashboard</option>
                         </select>
                     </div>
-                    
-                    <div class="status-info">
-                        <p><strong>Status:</strong> <span class="status-badge status-ready">Projects Ready</span></p>
-                        <p style="margin-top: 10px; font-size: 0.95rem; color: #64748b;">Virtualization projects are live and ready to explore. Select a project above to view details.</p>
-                    </div>
                 </section>
             </div>
             
@@ -392,7 +425,22 @@
         
         // Project data
         const projects = {
-            // Data Analysis Projects (upcoming)
+            // NEW: ANOVA Microbial Contamination Project
+            "anova-microbial": {
+                title: "ANOVA: Microbial Contamination Analysis",
+                type: "data",
+                description: "A comprehensive statistical analysis comparing microbial contamination (CFU) across different laboratory equipment. This project uses One-Way ANOVA to determine if equipment type significantly affects contamination levels, with detailed interpretation of F-statistics, P-values, and effect size (R-squared).",
+                status: "ready",
+                colabLink: "https://colab.research.google.com/drive/1DcQ86PJCunU6yCJvQcUKTWpfi6nzgfnG?usp=sharing",
+                githubLink: "#",
+                techStack: ["Python", "Pandas", "SciPy", "StatsModels", "ANOVA", "Statistical Analysis"],
+                results: {
+                    f_statistic: 45.67,
+                    p_value: 0.000003,
+                    r_squared: 0.935,
+                    interpretation: "Equipment type explains 93.5% of contamination variation. Incubator handle showed highest contamination (118.5 CFU average)."
+                }
+            },
             "sales-trends": {
                 title: "Sales Performance & Trend Analysis",
                 type: "data",
@@ -406,13 +454,6 @@
                 description: "Using clustering algorithms to segment customers based on purchasing behavior, demographics, and engagement patterns. This analysis helps in targeted marketing strategies and personalized customer experiences.",
                 status: "upcoming",
                 techStack: ["R", "K-means Clustering", "PCA", "Customer Analytics"]
-            },
-            "market-basket": {
-                title: "Market Basket Analysis",
-                type: "data",
-                description: "Association rule mining to uncover product affinities and purchasing patterns. This analysis helps retailers optimize product placement, cross-selling strategies, and promotional bundling.",
-                status: "upcoming",
-                techStack: ["Apriori Algorithm", "Python", "Data Mining", "Retail Analytics"]
             },
             
             // Virtualization Projects (ready)
@@ -465,9 +506,61 @@
             if (project.techStack && project.techStack.length > 0) {
                 techStackHTML = `
                     <div class="tech-stack">
+                        <strong>Technologies Used:</strong>
                         ${project.techStack.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
                     </div>
                 `;
+            }
+            
+            // Create results preview for ANOVA project
+            let resultsHTML = '';
+            if (project.results && project.status === 'ready') {
+                resultsHTML = `
+                    <div class="results-preview">
+                        <h4><i class="fas fa-chart-line"></i> Key Results</h4>
+                        <p><strong>F-statistic:</strong> ${project.results.f_statistic}</p>
+                        <p><strong>P-value:</strong> ${project.results.p_value.toExponential(6)}</p>
+                        <p><strong>R-squared (Effect Size):</strong> ${project.results.r_squared}</p>
+                        <p><strong>Interpretation:</strong> ${project.results.interpretation}</p>
+                        <pre>
+📊 SUMMARY STATISTICS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Autoclave Chamber   → 0.7 CFU
+Autoclave Handle    → 6.3 CFU  
+Refrigerator Chamber → 1.5 CFU
+Refrigerator Handle → 0.6 CFU
+Incubator Chamber   → 23.5 CFU
+Incubator Handle    → 118.5 CFU  ⚠️ HIGHEST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        </pre>
+                    </div>
+                `;
+            }
+            
+            // Create buttons HTML
+            let buttonsHTML = '';
+            if (project.status === 'ready') {
+                if (project.colabLink) {
+                    buttonsHTML += `
+                        <a href="${project.colabLink}" target="_blank" class="project-link" style="background-color: #3b82f6;">
+                            <i class="fab fa-google"></i> Open in Google Colab
+                        </a>
+                    `;
+                }
+                if (project.link) {
+                    buttonsHTML += `
+                        <a href="${project.link}" target="_blank" class="project-link">
+                            <i class="fas fa-external-link-alt"></i> View Live Project
+                        </a>
+                    `;
+                }
+                if (project.githubLink && project.githubLink !== '#') {
+                    buttonsHTML += `
+                        <a href="${project.githubLink}" target="_blank" class="project-link" style="background-color: #1f2937;">
+                            <i class="fab fa-github"></i> View on GitHub
+                        </a>
+                    `;
+                }
             }
             
             // Create project details HTML
@@ -484,10 +577,12 @@
                     
                     ${techStackHTML}
                     
-                    ${project.status === 'ready' && project.link ? 
-                        `<a href="${project.link}" target="_blank" class="project-link">
-                            <i class="fas fa-external-link-alt"></i> View Live Project
-                        </a>` 
+                    ${resultsHTML}
+                    
+                    ${project.status === 'ready' && (project.colabLink || project.link) ? 
+                        `<div class="button-group">
+                            ${buttonsHTML}
+                        </div>` 
                         : 
                         `<div class="coming-soon">
                             <i class="fas fa-tools"></i>
@@ -525,13 +620,6 @@
             
             // Display selected project
             displayProject(selectedProjectId);
-        });
-        
-        // Initialize with the first virtualization project as an example
-        window.addEventListener('DOMContentLoaded', () => {
-            // Uncomment the line below to auto-load the first virtualization project on page load
-            // virtualizationDropdown.value = 'tb-haningtone';
-            // displayProject('tb-haningtone');
         });
     </script>
 </body>
